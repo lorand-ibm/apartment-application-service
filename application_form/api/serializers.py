@@ -146,6 +146,7 @@ class ApartmentReservationSerializerBase(serializers.ModelSerializer):
         source="application_apartment.lotteryeventresult.result_position"
     )
     state = EnumField(ApartmentReservationState)
+    queue_position = serializers.SerializerMethodField()
 
     class Meta:
         model = ApartmentReservation
@@ -156,6 +157,11 @@ class ApartmentReservationSerializerBase(serializers.ModelSerializer):
             "queue_position",
             "state",
         )
+
+    def get_queue_position(self, obj):
+        if obj.application_apartment.lottery_eventresult.result_position is not None:
+            return obj.queue_position
+        return None
 
 
 class ApartmentReservationSerializer(ApartmentReservationSerializerBase):
